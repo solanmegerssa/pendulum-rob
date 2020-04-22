@@ -28,31 +28,34 @@ class BalancebotEnv(gym.Env):
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # used by loadURDF
 
-        self._seed()
+        self.seed()
         
         # paramId = p.addUserDebugParameter("My Param", 0, 100, 50)
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def _step(self, action):
+    def step(self, action):
+        """
+        Inputs:
+            int action: index into deltav array
+        Returns:
+            np.array observation: array of [pitch, angular-velocity, wheel-angular-velocity]
+        """
         self._assign_throttle(action)
         p.stepSimulation()
         self._observation = self._compute_observation()
         reward = self._compute_reward()
         done = self._compute_done()
 
-        self._envStepCounter += 1
-
         return np.array(self._observation), reward, done, {}
 
-    def _reset(self):
+    def reset(self):
         # reset is called once at initialization of simulation
         self.vt = 0
         self.vd = 0
         self.maxV = 24.6 # 235RPM = 24,609142453 rad/sec
-        self._envStepCounter = 0
 
         p.resetSimulation()
         p.setGravity(0,0,-10) # m/s^2
@@ -71,34 +74,37 @@ class BalancebotEnv(gym.Env):
         return np.array(self._observation)
 
     def _assign_throttle(self, action):
-        dv = 0.1
-        deltav = [-10.*dv,-5.*dv, -2.*dv, -0.1*dv, 0, 0.1*dv, 2.*dv,5.*dv, 10.*dv][action]
-        vt = clamp(self.vt + deltav, -self.maxV, self.maxV)
-        self.vt = vt
+        """
+        Computes the angular velocity command for a motor, given a throttle index.
+        inputs:
+            float action: desired wheel angular velocity
+        """
+
+        vt = clamp(action, -self.maxV, self.maxV)
 
         p.setJointMotorControl2(bodyUniqueId=self.botId, 
                                 jointIndex=0, 
                                 controlMode=p.VELOCITY_CONTROL, 
-                                targetVelocity=vt)
+                                targetVelocity=-vt)
         p.setJointMotorControl2(bodyUniqueId=self.botId, 
                                 jointIndex=1, 
                                 controlMode=p.VELOCITY_CONTROL, 
-                                targetVelocity=-vt)
+                                targetVelocity=vt)
 
     def _compute_observation(self):
         cubePos, cubeOrn = p.getBasePositionAndOrientation(self.botId)
         cubeEuler = p.getEulerFromQuaternion(cubeOrn)
         linear, angular = p.getBaseVelocity(self.botId)
-        return [cubeEuler[0],angular[0],self.vt]
+        return np.array([cubePos[0], linear[0], cubeEuler[0], angular[0]])
 
     def _compute_reward(self):
         return 0.1 - abs(self.vt - self.vd) * 0.005
 
     def _compute_done(self):
         cubePos, _ = p.getBasePositionAndOrientation(self.botId)
-        return cubePos[2] < 0.15 or self._envStepCounter >= 1500
+        return cubePos[2] < 0.15
 
-    def _render(self, mode='human', close=False):
+    def render(self, mode='human', close=False):
         pass
 
 def clamp(n, minn, maxn):
