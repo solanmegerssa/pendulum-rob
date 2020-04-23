@@ -13,3 +13,6 @@
  
  - in the meantime, going to set up a little hardware-in-the-loop sim.
  - first step is to get serial communication working in python.
+ - serial comm to the uno is working with a simple protocol. i only seem to get 2 decimal precision though...
+
+ ![](./media/serial_com_working.gif)

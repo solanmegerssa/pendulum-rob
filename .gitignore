@@ -1,0 +1,61 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@solanmegerssa 
+github
+/
+gitignore
+3.1k
+100k
+52.7k
+ Code Pull requests 121 Actions Projects 0 Security 0 Insights
+gitignore/VisualStudio.gitignore
+@danielchalmers danielchalmers Add FodyWeavers.xsd to VisualStudio.gitignore (#3380)
+2a4de26 3 days ago
+@shiftkey@arcresu@aroben@bbodenmiller@HassanHashemi@haacked@niik@AArnott@Zenuka@sayedihashimi@saschanaz@LunicLynx@OsirisTerje@sfhardman@jamiehumphries@richorama@RehanSaeed@marcrocny@matma@JFMG@jamesqo@elerch@cbadke@CoskunSunali@bdukes@anurse
+360 lines (289 sloc)  6.06 KB
+ # Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# vscode stuff
+*.vscode/

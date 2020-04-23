@@ -7,45 +7,55 @@ import balance_bot
 import balance_lqr
 
 
-def main(sim_with_hil=False):
+def main(sim_hil=True):
     # create the environment
-    env = gym.make("balancebot-v0") # <-- this we need to create
-
-    if not sim_with_hil:
-        controller = balance_lqr.BalanceLQR()
-        observation = env.reset()
-        for t in range(10000):
-            env.render(mode="human")
-            # print(observation)
-
-            # control loop
-            gains = controller.compute_gains()
-            control_force = np.dot(gains, observation)[0]*0.5
-            print("Control force: {}".format(control_force))
-            observation, reward, done, info = env.step(control_force)
-            if done:
-                print("Episode finished after {} timesteps".format(t+1))
-                break
-        print("Episode success".format(t+1))  
-    else:
+    env = gym.make("balancebot-v0")
+    if sim_hil:
         hil_sim(env)
+    else:
+        controller_sim(env)
 
     env.close()
 
+def controller_sim(env):
+    """ performs closed loop sim with LQR controller """
+
+    controller = balance_lqr.BalanceLQR()
+    observation = env.reset()
+    for t in range(10000):
+        env.render(mode="human")
+
+        # control loop
+        gains = controller.compute_gains()
+        control_force = np.dot(gains, observation)[0]*0.5
+        print("Control force: {}".format(control_force))
+        observation, _, done, _ = env.step(control_force)
+        if done:
+            print("Episode finished after {} timesteps".format(t+1))
+            break
+
+# TODO: move these to a different module
 def hil_sim(env, arduino_port="/dev/ttyACM0", baud=115200):
     arduino_connection = serial.Serial(arduino_port, baud, timeout=0.1)
-    counter = 32 # Below 32 everything in ASCII is gibberish
+    observation = env.reset()
     while True:
-        counter +=1
-        arduino_connection.write(str(chr(counter)).encode()) # Convert the decimal number to ASCII then send it to the Arduino
-        data = arduino_connection.readline()
-        # data = str(data)
-        data.rstrip(b'\n')
-        print(data.decode()) # Read the newest output from the Arduino
-        time.sleep(.1) # Delay for one tenth of a second
-        if counter == 255:
-            counter = 32
+        env.render(mode="human")
+        msg_str = write_serial_message(observation)
+        print(msg_str)
+        arduino_connection.write(msg_str.encode())
+        observation, _, _, _ = env.step(0.1)
+        time.sleep(.01) # Delay for one tenth of a second
+
+def write_serial_message(observation):
+    msg_str = "<"
+    for data in observation:
+        msg_str += '%.3f'%(data)
+        msg_str += ", "
+    msg_str += ">"
+
+    return msg_str
 
 
 if __name__ == '__main__':
-    main(sim_with_hil=True)
+    # TODO: add argparse here
+    main(sim_hil=True)

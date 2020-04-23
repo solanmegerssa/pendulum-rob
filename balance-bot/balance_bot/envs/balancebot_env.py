@@ -41,7 +41,7 @@ class BalancebotEnv(gym.Env):
         Inputs:
             int action: index into deltav array
         Returns:
-            np.array observation: array of [pitch, angular-velocity, wheel-angular-velocity]
+            np.array observation: array of [x-position, x-vel, pitch, pitch-rate]
         """
         self._assign_throttle(action)
         p.stepSimulation()
