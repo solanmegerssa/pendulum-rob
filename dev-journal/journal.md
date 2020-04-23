@@ -5,3 +5,11 @@
  - ...after a couple sign flips, the lqr works!!
 
  ![](./media/first_balance.gif)
+
+**23/04/2020:**
+ - imu has arrived (mpu-6050)! tried hooking it up but couldn't get solid contact with the pins. soldering iron on the way...
+
+ ![](./media/20200423_182846.jpg)
+ 
+ - in the meantime, going to set up a little hardware-in-the-loop sim.
+ - first step is to get serial communication working in python.
