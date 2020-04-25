@@ -16,3 +16,6 @@
  - serial comm to the uno is working with a simple protocol. i only seem to get 2 decimal precision though...
 
  ![](./media/serial_com_working.gif)
+
+ **25/04/2020:**
+ - plan for today: get arduino->pc comm working, implement lqr on arduino, see if hil sim works!
