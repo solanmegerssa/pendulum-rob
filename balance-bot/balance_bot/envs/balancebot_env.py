@@ -36,14 +36,14 @@ class BalancebotEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action):
+    def step(self, desired_wheel_omega):
         """
         Inputs:
-            int action: index into deltav array
+            float desired_wheel_omega: desired angular veloicty of wheels
         Returns:
             np.array observation: array of [x-position, x-vel, pitch, pitch-rate]
         """
-        self._assign_throttle(action)
+        self._assign_throttle(desired_wheel_omega)
         p.stepSimulation()
         self._observation = self._compute_observation()
         reward = self._compute_reward()
@@ -73,14 +73,14 @@ class BalancebotEnv(gym.Env):
         self._observation = self._compute_observation()
         return np.array(self._observation)
 
-    def _assign_throttle(self, action):
+    def _assign_throttle(self, desired_wheel_omega):
         """
         Computes the angular velocity command for a motor, given a throttle index.
         inputs:
-            float action: desired wheel angular velocity
+            float desired_wheel_omega: desired wheel angular velocity
         """
 
-        vt = clamp(action, -self.maxV, self.maxV)
+        vt = clamp(desired_wheel_omega, -self.maxV, self.maxV)
 
         p.setJointMotorControl2(bodyUniqueId=self.botId, 
                                 jointIndex=0, 

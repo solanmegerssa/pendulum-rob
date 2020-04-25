@@ -59,4 +59,8 @@ class BalanceLQR:
 
         return gains
 
-        
+
+if __name__ == "__main__":
+    lqr = BalanceLQR()
+    gains = lqr.compute_gains()
+    print(gains)
