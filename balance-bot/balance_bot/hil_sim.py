@@ -7,10 +7,9 @@ def hil_sim(env, arduino_port="/dev/ttyACM0", baud=9600):
     while True:
         env.render(mode="human")
         write_observation_msg(observation, arduino_connection)
-        # TODO: maybe add a sleep here?
-        control_response = read_control_msg(arduino_connection)
-        observation, _, _, _ = env.step(0.1)
         time.sleep(.01) # Delay for one tenth of a second
+        control_response = read_control_msg(arduino_connection)
+        observation, _, _, _ = env.step(control_response)
 
 def write_observation_msg(observation, arduino_connection):
     """ takes array of observation and writes to serial line """
@@ -19,6 +18,7 @@ def write_observation_msg(observation, arduino_connection):
         msg_str += '%.6f'%(data)
         msg_str += ", "
     msg_str += ">"
+    # print(msg_str)
     arduino_connection.write(msg_str.encode())
 
 def read_control_msg(arduino_connection):
@@ -30,10 +30,12 @@ def read_control_msg(arduino_connection):
         return 0.0
     
     control = 0.0
-    if data:
-        print("DATA: {}".format(data))
-        control = data.split(":")[-1]
-        print("control after split: {}".format(control))
+    if data and data[0:2]=="<@":
+        # print("DATA: {}".format(data))
+        control = data.split("@")[-1]
+        # print("control after split: {}".format(control))
         control = float(control.split(">")[0])
-        print(control)
+    else:
+        print("missed control loop")
+    print(control)
     return control

@@ -17,7 +17,16 @@
 
  ![](./media/serial_com_working.gif)
 
- **25/04/2020:**
+**25/04/2020:**
  - plan for today: get arduino->pc comm working, implement lqr on arduino, see if hil sim works!
  - 2-decimal floating issue was because Serial.print() by default prints to two decimals.
  - LQR is implemented on the uno, but deseriializing messages in python is not working well. need to implement a better protocol...
+
+**30/04/2020:**
+ - soldered leads to imu.
+
+ ![](./media/imu_setup.jpg)
+
+ - and it works!
+ 
+ ![](./media/imu_working.png)

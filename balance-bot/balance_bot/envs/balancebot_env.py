@@ -58,7 +58,7 @@ class BalancebotEnv(gym.Env):
         self.maxV = 24.6 # 235RPM = 24,609142453 rad/sec
 
         p.resetSimulation()
-        p.setGravity(0,0,-10) # m/s^2
+        p.setGravity(0,0,-9.8) # m/s^2
         p.setTimeStep(0.01) # sec
         planeId = p.loadURDF("plane.urdf")
         cubeStartPos = [0,0,0.001]

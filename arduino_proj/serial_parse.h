@@ -15,7 +15,6 @@ void recvWithStartEndMarkers() {
 
     while (Serial.available() > 0 && newData == false) {
         rc = Serial.read();
-
         if (recvInProgress == true) {
             if (rc != endMarker) {
                 receivedChars[ndx] = rc;
@@ -74,8 +73,8 @@ void getLatestMessage(float result[]) {
 }
 
 void publishControlMessage(float my_float) {
-    Serial.print("<cntrl: ");
-    Serial.print(my_float, 6);
+    Serial.print("<@");
+    Serial.print(my_float, 4);
     Serial.println(">");
 }
 
