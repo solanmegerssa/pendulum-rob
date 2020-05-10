@@ -30,3 +30,9 @@
  - and it works!
  
  ![](./media/imu_working.png)
+
+**08/05/2020**
+ - first motor test, motors don't spin. only getting about 6V out of the batteries, might not be enough...
+ - turns out I had the batteries connected to the wrong terminal. they spin now! will have to order a AA battery pack though.
+
+![](./media/motor_working.gif)
